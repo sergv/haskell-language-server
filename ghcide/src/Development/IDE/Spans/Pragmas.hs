@@ -85,7 +85,7 @@ updateLineSplitTextEdits tokenRange tokenString prevLineSplitTextEdits
   , let currInsertRange = prevInsertRange
   , let currInsertText =
           Text.init prevInsertText
-          <> Text.replicate (startCol - prevDeleteEndCol) " "
+          <> Text.replicate (fromIntegral $ startCol - prevDeleteEndCol) " "
           <> Text.pack (List.take newLineCol tokenString)
           <> "\n"
   , let currInsertTextEdit = LSP.TextEdit currInsertRange currInsertText
