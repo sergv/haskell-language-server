@@ -329,13 +329,13 @@ positionToSourcePos :: Position -> SourcePos
 positionToSourcePos pos =
     P.SourcePos
         { sourceName = "<block comment>"
-        , sourceLine = P.mkPos $ 1 + pos ^. line
-        , sourceColumn = P.mkPos $ 1 + pos ^. character
+        , sourceLine = P.mkPos $ fromIntegral $ 1 + pos ^. line
+        , sourceColumn = P.mkPos $ fromIntegral $ 1 + pos ^. character
         }
 
 sourcePosToPosition :: SourcePos -> Position
 sourcePosToPosition SourcePos {..} =
-    Position (unPos sourceLine - 1) (unPos sourceColumn - 1)
+    Position (fromIntegral $ unPos sourceLine - 1) (fromIntegral $ unPos sourceColumn - 1)
 
 -- * Line Group Parser
 
@@ -567,5 +567,5 @@ contiguousGroupOn toLineCol = foldr step []
 groupLineComments ::
     Map Range a -> [NonEmpty (Range, a)]
 groupLineComments =
-    contiguousGroupOn (fst >>> view start >>> view line &&& view character)
+    contiguousGroupOn (fst >>> view start >>> view (fromIntegral . line) &&& view (fromIntegral . character))
         . Map.toList
