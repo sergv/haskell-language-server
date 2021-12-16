@@ -1,7 +1,6 @@
 {-# LANGUAGE CPP                   #-}
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE MultiWayIf            #-}
-{-# LANGUAGE ViewPatterns          #-}
 
 module Development.IDE.Spans.Pragmas
   ( NextPragmaInfo(..)
