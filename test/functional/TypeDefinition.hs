@@ -4,6 +4,7 @@ import           Data.Tuple.Extra (first3)
 import           System.FilePath  ((</>))
 import           Test.Hls
 import           Test.Hls.Command
+import Data.Word
 
 tests :: TestTree
 tests = testGroup "type definitions" [
@@ -37,7 +38,7 @@ getTypeDefinitionTest (symbolFile, symbolLine, symbolCol) definitionLocations =
         InL defs <- getTypeDefinitions doc $ Position symbolLine symbolCol
         liftIO $ defs `expectSameLocations` map (first3 (definitionsPath </>)) definitionLocations
 
-getTypeDefinitionTest' :: Int -> Int -> Int -> Int -> Assertion
+getTypeDefinitionTest' :: Word32 -> Word32 -> Word32 -> Word32 -> Assertion
 getTypeDefinitionTest' symbolLine symbolCol definitionLine definitionCol =
     getTypeDefinitionTest ("src/Lib.hs", symbolLine, symbolCol)
                           [("src/Lib.hs", definitionLine, definitionCol)]

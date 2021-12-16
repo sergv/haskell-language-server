@@ -7,7 +7,7 @@ import           Language.LSP.Types
 import           Language.LSP.Types.Lens as Lsp
 
 -- | (0-based line number, 0-based column number)
-type Cursor = (Int, Int)
+type Cursor = (Word32, Word32)
 
 cursorPosition :: Cursor -> Position
 cursorPosition (line,  col) = Position line col

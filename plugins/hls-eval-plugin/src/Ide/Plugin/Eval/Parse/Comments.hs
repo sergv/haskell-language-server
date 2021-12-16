@@ -12,7 +12,7 @@ module Ide.Plugin.Eval.Parse.Comments where
 import qualified Control.Applicative.Combinators.NonEmpty as NE
 import           Control.Arrow                            (first, (&&&), (>>>))
 import           Control.Lens                             (lensField, lensRules,
-                                                           view, (.~), (^.))
+                                                           view, (.~), (^.), to)
 import           Control.Lens.Extras                      (is)
 import           Control.Lens.TH                          (makeLensesWith,
                                                            makePrisms,
@@ -36,7 +36,7 @@ import           Data.Void                                (Void)
 import           Development.IDE                          (Position,
                                                            Range (Range))
 import           Development.IDE.Types.Location           (Position (..))
-import           GHC.Generics
+import           GHC.Generics hiding (to)
 import           Ide.Plugin.Eval.Types
 import           Language.LSP.Types.Lens                  (character, end, line,
                                                            start)
@@ -567,5 +567,5 @@ contiguousGroupOn toLineCol = foldr step []
 groupLineComments ::
     Map Range a -> [NonEmpty (Range, a)]
 groupLineComments =
-    contiguousGroupOn (fst >>> view start >>> view (fromIntegral . line) &&& view (fromIntegral . character))
+    contiguousGroupOn (fst >>> view start >>> view (line . to fromIntegral) &&& view (character . to fromIntegral))
         . Map.toList
