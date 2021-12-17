@@ -6376,12 +6376,12 @@ genRange r = do
     where rows = fromIntegral $ Rope.rows r
 
 -- | Get the ith line of a rope, starting from 0. Trailing newline not included.
-nthLine :: Int -> Rope -> Rope
+nthLine :: Word32 -> Rope -> Rope
 nthLine i r
     | i < 0 = error $ "Negative line number: " <> show i
     | i == 0 && Rope.rows r == 0 = r
-    | i >= Rope.rows r = error $ "Row number out of bounds: " <> show i <> "/" <> show (Rope.rows r)
-    | otherwise = Rope.takeWhile (/= '\n') $ fst $ Rope.splitAtLine 1 $ snd $ Rope.splitAtLine (i - 1) r
+    | i >= fromIntegral (Rope.rows r) = error $ "Row number out of bounds: " <> show i <> "/" <> show (Rope.rows r)
+    | otherwise = Rope.takeWhile (/= '\n') $ fst $ Rope.splitAtLine 1 $ snd $ Rope.splitAtLine (fromIntegral i - 1) r
 
 getWatchedFilesSubscriptionsUntil :: forall m. SServerMethod m -> Session [DidChangeWatchedFilesRegistrationOptions]
 getWatchedFilesSubscriptionsUntil m = do
