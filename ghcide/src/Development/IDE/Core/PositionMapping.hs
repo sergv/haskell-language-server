@@ -140,15 +140,18 @@ toCurrent (Range start@(Position startLine startColumn) end@(Position endLine en
     -- Position is in the region that was changed.
     where
         lineDiff = linesNew - linesOld
-        linesNew = fromIntegral $ T.count "\n" t
-        linesOld = endLine - startLine
+        linesNew = T.count "\n" t
+        linesOld = fromIntegral endLine - fromIntegral startLine
+        newEndColumn :: Word32
         newEndColumn
-          | linesNew == 0 = startColumn + (fromIntegral $ T.length t)
+          | linesNew == 0 = fromIntegral $ fromIntegral startColumn + T.length t
           | otherwise = fromIntegral $ T.length $ T.takeWhileEnd (/= '\n') t
+        newColumn :: Word32
         newColumn
-          | line == endLine = (column + newEndColumn) - endColumn
+          | line == endLine = fromIntegral $ (fromIntegral column + newEndColumn) - fromIntegral endColumn
           | otherwise = column
-        newLine = line + lineDiff
+        newLine :: Word32
+        newLine = fromIntegral $ fromIntegral line + lineDiff
 
 fromCurrent :: Range -> T.Text -> Position -> PositionResult Position
 fromCurrent (Range start@(Position startLine startColumn) end@(Position endLine endColumn)) t (Position line column)
@@ -163,16 +166,20 @@ fromCurrent (Range start@(Position startLine startColumn) end@(Position endLine 
     -- Position is in the region that was changed.
     where
         lineDiff = linesNew - linesOld
-        linesNew = fromIntegral $ T.count "\n" t
-        linesOld = endLine - startLine
-        newEndLine = endLine + lineDiff
+        linesNew = T.count "\n" t
+        linesOld = fromIntegral endLine - fromIntegral startLine
+        newEndLine :: Word32
+        newEndLine = fromIntegral $ fromIntegral endLine + lineDiff
+        newEndColumn :: Word32
         newEndColumn
-          | linesNew == 0 = startColumn + (fromIntegral $ T.length t)
+          | linesNew == 0 = fromIntegral $ fromIntegral startColumn + T.length t
           | otherwise = fromIntegral $ T.length $ T.takeWhileEnd (/= '\n') t
+        newColumn :: Word32
         newColumn
-          | line == newEndLine = (column + endColumn) - newEndColumn
+          | line == newEndLine = fromIntegral $ (fromIntegral column + fromIntegral endColumn) - newEndColumn
           | otherwise = column
-        newLine = line - lineDiff
+        newLine :: Word32
+        newLine = fromIntegral $ (fromIntegral line) - lineDiff
 
 deltaFromDiff :: T.Text -> T.Text -> PositionDelta
 deltaFromDiff (T.lines -> old) (T.lines -> new) =

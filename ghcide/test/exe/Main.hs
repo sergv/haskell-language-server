@@ -4065,9 +4065,9 @@ cppTests =
                   "foo = 42"
                 ]
         -- The error locations differ depending on which C-preprocessor is used.
-        -- Some give the column number and others don't (hence -1). Assert either
+        -- Some give the column number and others don't (hence maxBound == -1 unsigned). Assert either
         -- of them.
-        (run $ expectError content (2, -1))
+        (run $ expectError content (2, maxBound))
           `catch` ( \e -> do
                       let _ = e :: HUnitFailure
                       run $ expectError content (2, 1)
@@ -6356,24 +6356,28 @@ genRope = Rope.fromText . getPrintableText <$> arbitrary
 
 genPosition :: Rope -> Gen Position
 genPosition r = do
-    row <- choose (0, max 0 $ rows - 1)
-    let columns = fromIntegral $ Rope.columns (nthLine (fromIntegral row) r)
-    column <- choose (0, max 0 $ columns - 1)
-    pure $ Position row column
-    where rows = fromIntegral $ Rope.rows r
+    let rows = Rope.rows r
+    row <- choose (0, max 0 $ rows - 1) `suchThat` inBounds @Word32
+    let columns = Rope.columns (nthLine row r)
+    column <- choose (0, max 0 $ columns - 1) `suchThat` inBounds @Word32
+    pure $ Position (fromIntegral row) (fromIntegral column)
 
 genRange :: Rope -> Gen Range
 genRange r = do
+    let rows = Rope.rows r
     startPos@(Position startLine startColumn) <- genPosition r
-    let maxLineDiff = max 0 $ rows - 1 - startLine
-    endLine <- choose (startLine, startLine + maxLineDiff)
-    let columns = fromIntegral $ Rope.columns (nthLine (fromIntegral endLine) r)
+    let maxLineDiff = max 0 $ rows - 1 - fromIntegral startLine
+    endLine <- choose (fromIntegral startLine, fromIntegral startLine + maxLineDiff) `suchThat` inBounds @Word32
+    let columns = Rope.columns (nthLine (fromIntegral endLine) r)
     endColumn <-
-        if startLine == endLine
-            then choose (startColumn, columns)
+        if fromIntegral startLine == endLine
+            then choose (fromIntegral startColumn, columns)
             else choose (0, max 0 $ columns - 1)
-    pure $ Range startPos (Position endLine endColumn)
-    where rows = fromIntegral $ Rope.rows r
+        `suchThat` inBounds @Word32
+    pure $ Range startPos (Position (fromIntegral endLine) (fromIntegral endColumn))
+
+inBounds :: forall b a . (Integral a, Integral b, Bounded b) => a -> Bool
+inBounds a = let i = toInteger a in i <= toInteger (maxBound @b) && i >= toInteger (minBound @b)
 
 -- | Get the ith line of a rope, starting from 0. Trailing newline not included.
 nthLine :: Int -> Rope -> Rope
