@@ -51,9 +51,15 @@ extra-deps:
 - refinery-0.4.0.0
 - retrie-1.0.0.0
 - some-1.0.2
-- lsp-1.2.0.1
-- lsp-types-1.3.0.1
-- lsp-test-0.14.0.1
+# - lsp-1.2.0.1
+# - lsp-types-1.3.0.1
+# - lsp-test-0.14.0.1
+- github: haskell/lsp
+  commit: 41b8f01ce284eced717636a796153402ea7cfc5b
+  subdirs:
+  - lsp-types
+  - lsp
+  - lsp-test
 - sqlite-simple-0.4.18.0
 
 - github: anka-213/th-extras
