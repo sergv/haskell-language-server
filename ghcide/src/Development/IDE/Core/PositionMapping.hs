@@ -179,7 +179,7 @@ fromCurrent (Range start@(Position startLine startColumn) end@(Position endLine 
           | line == newEndLine = fromIntegral $ (fromIntegral column + fromIntegral endColumn) - newEndColumn
           | otherwise = column
         newLine :: Word32
-        newLine = fromIntegral $ (fromIntegral line) - lineDiff
+        newLine = fromIntegral $ fromIntegral line - lineDiff
 
 deltaFromDiff :: T.Text -> T.Text -> PositionDelta
 deltaFromDiff (T.lines -> old) (T.lines -> new) =
