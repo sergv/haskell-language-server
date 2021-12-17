@@ -4,7 +4,6 @@ import           Data.Tuple.Extra (first3)
 import           System.FilePath  ((</>))
 import           Test.Hls
 import           Test.Hls.Command
-import Data.Word
 
 tests :: TestTree
 tests = testGroup "type definitions" [
