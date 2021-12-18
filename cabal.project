@@ -30,19 +30,19 @@ packages:
 source-repository-package
     type: git
     location: https://github.com/haskell/lsp
-    tag: 41b8f01ce284eced717636a796153402ea7cfc5b
+    tag: 4e93686f462eb2a46b434e31905645a8acc6b76d
     subdir: lsp-types
 
 source-repository-package
     type: git
     location: https://github.com/haskell/lsp
-    tag: 41b8f01ce284eced717636a796153402ea7cfc5b
+    tag: 4e93686f462eb2a46b434e31905645a8acc6b76d
     subdir: lsp
 
 source-repository-package
     type: git
     location: https://github.com/haskell/lsp
-    tag: 41b8f01ce284eced717636a796153402ea7cfc5b
+    tag: 4e93686f462eb2a46b434e31905645a8acc6b76d
     subdir: lsp-test
 
 -- Standard location for temporary packages needed for particular environments
