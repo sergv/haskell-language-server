@@ -30,20 +30,8 @@ packages:
 source-repository-package
     type: git
     location: https://github.com/haskell/lsp
-    tag: 41b8f01ce284eced717636a796153402ea7cfc5b
-    subdir: lsp-types
-
-source-repository-package
-    type: git
-    location: https://github.com/haskell/lsp
-    tag: 41b8f01ce284eced717636a796153402ea7cfc5b
-    subdir: lsp
-
-source-repository-package
-    type: git
-    location: https://github.com/haskell/lsp
-    tag: 41b8f01ce284eced717636a796153402ea7cfc5b
-    subdir: lsp-test
+    tag: 2e834dc7b90d53415fd9755c2515be056d5e74ba
+    subdir: lsp lsp-types lsp-test
 
 with-compiler: ghc-9.0.1
 
