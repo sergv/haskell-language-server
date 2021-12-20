@@ -5171,7 +5171,7 @@ outlineTests = testGroup
                                            loc
                                            (Just $ List cc)
 
-pattern R :: Word32 -> Word32 -> Word32 -> Word32 -> Range
+pattern R :: UInt -> UInt -> UInt -> UInt -> Range
 pattern R x y x' y' = Range (Position x y) (Position x' y')
 
 xfail :: TestTree -> String -> TestTree
@@ -5212,10 +5212,10 @@ data Expect
 --  | ExpectExtern -- TODO: as above, but expected to succeed: need some more info in here, once we have some working examples
   deriving Eq
 
-mkR :: Word32 -> Word32 -> Word32 -> Word32 -> Expect
+mkR :: UInt -> UInt -> UInt -> UInt -> Expect
 mkR startLine startColumn endLine endColumn = ExpectRange $ mkRange startLine startColumn endLine endColumn
 
-mkL :: Uri -> Word32 -> Word32 -> Word32 -> Word32 -> Expect
+mkL :: Uri -> UInt -> UInt -> UInt -> UInt -> Expect
 mkL uri startLine startColumn endLine endColumn = ExpectLocation $ Location uri $ mkRange startLine startColumn endLine endColumn
 
 haddockTests :: TestTree
@@ -5902,7 +5902,7 @@ referenceTest name loc includeDeclaration expected =
   where
     docs = map fst3 expected
 
-type SymbolLocation = (FilePath, Word32, Word32)
+type SymbolLocation = (FilePath, UInt, UInt)
 
 expectSameLocations :: [Location] -> [SymbolLocation] -> Assertion
 expectSameLocations actual expected = do
@@ -5955,7 +5955,7 @@ pickActionWithTitle title actions = do
         , title == actionTitle
         ]
 
-mkRange :: Word32 -> Word32 -> Word32 -> Word32 -> Range
+mkRange :: UInt -> UInt -> UInt -> UInt -> Range
 mkRange a b c d = Range (Position a b) (Position c d)
 
 run :: Session a -> IO a
@@ -6357,9 +6357,9 @@ genRope = Rope.fromText . getPrintableText <$> arbitrary
 genPosition :: Rope -> Gen Position
 genPosition r = do
     let rows = Rope.rows r
-    row <- choose (0, max 0 $ rows - 1) `suchThat` inBounds @Word32
+    row <- choose (0, max 0 $ rows - 1) `suchThat` inBounds @UInt
     let columns = Rope.columns (nthLine row r)
-    column <- choose (0, max 0 $ columns - 1) `suchThat` inBounds @Word32
+    column <- choose (0, max 0 $ columns - 1) `suchThat` inBounds @UInt
     pure $ Position (fromIntegral row) (fromIntegral column)
 
 genRange :: Rope -> Gen Range
@@ -6367,13 +6367,13 @@ genRange r = do
     let rows = Rope.rows r
     startPos@(Position startLine startColumn) <- genPosition r
     let maxLineDiff = max 0 $ rows - 1 - fromIntegral startLine
-    endLine <- choose (fromIntegral startLine, fromIntegral startLine + maxLineDiff) `suchThat` inBounds @Word32
+    endLine <- choose (fromIntegral startLine, fromIntegral startLine + maxLineDiff) `suchThat` inBounds @UInt
     let columns = Rope.columns (nthLine (fromIntegral endLine) r)
     endColumn <-
         if fromIntegral startLine == endLine
             then choose (fromIntegral startColumn, columns)
             else choose (0, max 0 $ columns - 1)
-        `suchThat` inBounds @Word32
+        `suchThat` inBounds @UInt
     pure $ Range startPos (Position (fromIntegral endLine) (fromIntegral endColumn))
 
 inBounds :: forall b a . (Integral a, Integral b, Bounded b) => a -> Bool
@@ -6416,6 +6416,6 @@ listOfChar | ghcVersion >= GHC90 = "String"
            | otherwise = "[Char]"
 
 -- | Ghc 9 doesn't include the $-sign in TH warnings like earlier versions did
-thDollarIdx :: Word32
+thDollarIdx :: UInt
 thDollarIdx | ghcVersion >= GHC90 = 1
             | otherwise = 0

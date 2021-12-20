@@ -32,7 +32,7 @@ import qualified Data.Text           as T
 import qualified Data.Vector.Unboxed as V
 import           Language.LSP.Types  (Position (Position), Range (Range),
                                       TextDocumentContentChangeEvent (TextDocumentContentChangeEvent),
-                                      Word32)
+                                      UInt)
 
 -- | Either an exact position, or the range of text that was substituted
 data PositionResult a
@@ -142,15 +142,15 @@ toCurrent (Range start@(Position startLine startColumn) end@(Position endLine en
         lineDiff = linesNew - linesOld
         linesNew = T.count "\n" t
         linesOld = fromIntegral endLine - fromIntegral startLine
-        newEndColumn :: Word32
+        newEndColumn :: UInt
         newEndColumn
           | linesNew == 0 = fromIntegral $ fromIntegral startColumn + T.length t
           | otherwise = fromIntegral $ T.length $ T.takeWhileEnd (/= '\n') t
-        newColumn :: Word32
+        newColumn :: UInt
         newColumn
           | line == endLine = fromIntegral $ (fromIntegral column + newEndColumn) - fromIntegral endColumn
           | otherwise = column
-        newLine :: Word32
+        newLine :: UInt
         newLine = fromIntegral $ fromIntegral line + lineDiff
 
 fromCurrent :: Range -> T.Text -> Position -> PositionResult Position
@@ -168,17 +168,17 @@ fromCurrent (Range start@(Position startLine startColumn) end@(Position endLine 
         lineDiff = linesNew - linesOld
         linesNew = T.count "\n" t
         linesOld = fromIntegral endLine - fromIntegral startLine
-        newEndLine :: Word32
+        newEndLine :: UInt
         newEndLine = fromIntegral $ fromIntegral endLine + lineDiff
-        newEndColumn :: Word32
+        newEndColumn :: UInt
         newEndColumn
           | linesNew == 0 = fromIntegral $ fromIntegral startColumn + T.length t
           | otherwise = fromIntegral $ T.length $ T.takeWhileEnd (/= '\n') t
-        newColumn :: Word32
+        newColumn :: UInt
         newColumn
           | line == newEndLine = fromIntegral $ (fromIntegral column + fromIntegral endColumn) - newEndColumn
           | otherwise = column
-        newLine :: Word32
+        newLine :: UInt
         newLine = fromIntegral $ fromIntegral line - lineDiff
 
 deltaFromDiff :: T.Text -> T.Text -> PositionDelta
@@ -202,7 +202,7 @@ deltaFromDiff (T.lines -> old) (T.lines -> new) =
     f :: Int -> Int -> Int
     f !a !b = if b == -1 then a else b
 
-    lookupPos :: Word32 -> V.Vector Int -> V.Vector Int -> V.Vector Int -> Position -> PositionResult Position
+    lookupPos :: UInt -> V.Vector Int -> V.Vector Int -> V.Vector Int -> Position -> PositionResult Position
     lookupPos end prevs nexts xs (Position line col)
       | line >= fromIntegral (V.length xs) = PositionRange (Position end 0) (Position end 0)
       | otherwise           = case V.unsafeIndex xs (fromIntegral line) of

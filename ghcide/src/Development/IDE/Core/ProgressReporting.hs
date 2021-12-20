@@ -160,7 +160,7 @@ delayedProgressReporting before after lspEnv optProgressStyle = do
                         let
                             nextFrac :: Double
                             nextFrac = fromIntegral done / fromIntegral todo
-                            nextPct :: Word32
+                            nextPct :: UInt
                             nextPct = floor $ 100 * nextFrac
                         when (nextPct /= prevPct) $
                           LSP.sendNotification LSP.SProgress $

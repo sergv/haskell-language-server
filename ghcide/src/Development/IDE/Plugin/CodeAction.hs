@@ -71,7 +71,7 @@ import           Language.LSP.Types                                (CodeAction (
                                                                     SMethod (STextDocumentCodeAction),
                                                                     TextDocumentIdentifier (TextDocumentIdentifier),
                                                                     TextEdit (TextEdit),
-                                                                    Word32,
+                                                                    UInt,
                                                                     WorkspaceEdit (WorkspaceEdit, _changeAnnotations, _changes, _documentChanges),
                                                                     type (|?) (InR),
                                                                     uriToFilePath)
@@ -1081,7 +1081,7 @@ suggestInstanceConstraint df (L _ HsModule {hsmodDecls}) Diagnostic {..} missing
         | otherwise
         = Nothing
 
-      readPositionNumber :: T.Text -> Word32
+      readPositionNumber :: T.Text -> UInt
       readPositionNumber = T.unpack >>> read @Integer >>> fromIntegral
 
       actionTitle :: T.Text -> T.Text

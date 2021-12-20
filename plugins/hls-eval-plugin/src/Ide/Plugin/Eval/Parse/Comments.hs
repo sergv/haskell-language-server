@@ -36,9 +36,9 @@ import           Data.Void                                (Void)
 import           Development.IDE                          (Position,
                                                            Range (Range))
 import           Development.IDE.Types.Location           (Position (..))
-import           GHC.Generics hiding (to)
+import           GHC.Generics hiding (to, UInt)
 import           Ide.Plugin.Eval.Types
-import           Language.LSP.Types                       (Word32)
+import           Language.LSP.Types                       (UInt)
 import           Language.LSP.Types.Lens                  (character, end, line,
                                                            start)
 import           Text.Megaparsec
@@ -551,7 +551,7 @@ Two adjacent tokens are considered to be contiguous if
 >>> contiguousGroupOn id [(1,2),(2,2),(3,4),(4,4),(5,4),(7,0),(8,0)]
 [(1,2) :| [(2,2)],(3,4) :| [(4,4),(5,4)],(7,0) :| [(8,0)]]
 -}
-contiguousGroupOn :: (a -> (Word32, Word32)) -> [a] -> [NonEmpty a]
+contiguousGroupOn :: (a -> (UInt, UInt)) -> [a] -> [NonEmpty a]
 contiguousGroupOn toLineCol = foldr step []
     where
         step a [] = [pure a]

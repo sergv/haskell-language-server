@@ -567,7 +567,7 @@ indexHieFile se mod_summary srcPath !hash hf = do
       let
         progressFrac :: Double
         progressFrac = fromIntegral done / fromIntegral (done + remaining)
-        progressPct :: Word32
+        progressPct :: LSP.UInt
         progressPct = floor $ 100 * progressFrac
 
       whenJust (lspEnv se) $ \env -> whenJust tok $ \tok -> LSP.runLspT env $
