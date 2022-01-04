@@ -30,6 +30,13 @@ packages:
          ./plugins/hls-change-type-signature-plugin
          ./plugins/hls-gadt-plugin
 
+         ./deps/hie-bios/hie-bios.cabal
+         ./deps/implicit-hie-cradle/implicit-hie-cradle.cabal
+         -- ./deps/implicit-hie/implicit-hie.cabal
+
+allow-newer:
+  ghcide:implicit-hie-cradle
+
 -- Standard location for temporary packages needed for particular environments
 -- For example it is used in the project gitlab mirror to help in the MAcOS M1 build script
 -- See https://github.com/haskell/haskell-language-server/blob/master/.gitlab-ci.yml
@@ -43,8 +50,6 @@ package *
   test-show-details: direct
 
 write-ghc-environment-files: never
-
-index-state: 2022-06-12T00:00:00Z
 
 constraints:
   hyphenation +embed,
@@ -62,6 +67,9 @@ source-repository-package
   location: https://github.com/pepeiborra/ekg-json
   tag: 7a0af7a8fd38045fd15fb13445bdcc7085325460
   -- https://github.com/tibbe/ekg-json/pull/12
+
+constraints:
+    haskell-language-server -floskell -fourmolu -ormolu -stylishHaskell -brittany +rename
 
 allow-newer:
   -- ghc-9.2
