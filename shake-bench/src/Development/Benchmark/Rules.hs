@@ -74,7 +74,13 @@ import           Data.Aeson                                (FromJSON (..),
                                                             ToJSON (..),
                                                             Value (..), object,
                                                             (.!=), (.:?), (.=))
+<<<<<<< HEAD
 import           Data.Aeson.Lens                           (_Object, AsJSON (_JSON), _String)
+=======
+import qualified Data.Aeson.Key                            as A
+import qualified Data.Aeson.KeyMap                         as A
+import           Data.Bifunctor                            (first)
+>>>>>>> 3a6696af (wip)
 import           Data.Char                                 (isDigit)
 import           Data.List                                 (find, isInfixOf,
                                                             stripPrefix,
@@ -87,8 +93,6 @@ import qualified Data.Text                                 as T
 import           Development.Shake
 import           Development.Shake.Classes                 (Binary, Hashable,
                                                             NFData, Typeable)
-import           GHC.Exts                                  (IsList (toList),
-                                                            fromList)
 import           GHC.Generics                              (Generic)
 import           GHC.Stack                                 (HasCallStack)
 import qualified Graphics.Rendering.Chart.Backend.Diagrams as E
@@ -501,6 +505,7 @@ data GitCommit = GitCommit
 
 instance FromJSON GitCommit where
   parseJSON (String s) = pure $ GitCommit s Nothing Nothing True
+<<<<<<< HEAD
   parseJSON o@(Object _) = do
     let keymap = o ^. _Object
     case toList keymap of
@@ -508,6 +513,12 @@ instance FromJSON GitCommit where
       [(preview _String . toJSON -> Just name, String gitName)] ->
         pure $ GitCommit gitName (Just name) Nothing True
       [(preview _String . toJSON -> Just name, Object props)] ->
+=======
+  parseJSON (Object keymap) = do
+    case map (first A.toText) $ A.toList keymap of
+      [(name, String gitName)] -> pure $ GitCommit gitName (Just name) Nothing True
+      [(name, Object props)] ->
+>>>>>>> 3a6696af (wip)
         GitCommit
           <$> props .:? "git"  .!= name
           <*> pure (Just name)

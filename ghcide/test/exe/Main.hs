@@ -7041,3 +7041,7 @@ listOfChar | ghcVersion >= GHC90 = "String"
 thDollarIdx :: UInt
 thDollarIdx | ghcVersion >= GHC90 = 1
             | otherwise = 0
+
+-- Local Variables:
+-- dante-target: "ghcide:test:ghcide-tests"
+-- End:

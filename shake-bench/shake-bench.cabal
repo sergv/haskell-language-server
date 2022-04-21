@@ -15,7 +15,7 @@ library
   exposed-modules:  Development.Benchmark.Rules
   hs-source-dirs:   src
   build-depends:
-        aeson,
+        aeson >= 2,
         base == 4.*,
         Chart,
         Chart-diagrams,
@@ -27,7 +27,6 @@ library
         extra >= 1.7.2,
         filepath,
         lens,
-        lens-aeson,
         mtl,
         shake,
         text
