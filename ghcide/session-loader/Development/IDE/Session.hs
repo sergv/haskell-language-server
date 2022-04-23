@@ -382,7 +382,7 @@ getHieDbLoc :: FilePath -> IO FilePath
 getHieDbLoc dir = do
   let db = intercalate "-" [dirHash, takeBaseName dir, Compat.ghcVersionStr, hiedbDataVersion] <.> "hiedb"
       dirHash = B.unpack $ B16.encode $ H.hash $ B.pack dir
-  cDir <- IO.getXdgDirectory IO.XdgCache cacheDir
+  let cDir = "/tmp/dist/ghcide" </> cacheDir
   createDirectoryIfMissing True cDir
   pure (cDir </> db)
 
@@ -1021,7 +1021,7 @@ setODir f d =
 
 getCacheDirsDefault :: String -> [String] -> IO CacheDirs
 getCacheDirsDefault prefix opts = do
-    dir <- Just <$> getXdgDirectory XdgCache (cacheDir </> prefix ++ "-" ++ opts_hash)
+    let dir = Just $ "/tmp/dist/ghcide" </> (cacheDir </> prefix ++ "-" ++ opts_hash)
     return $ CacheDirs dir dir dir
     where
         -- Create a unique folder per set of different GHC options, assuming that each different set of
