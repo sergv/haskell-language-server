@@ -6,25 +6,25 @@ packages:
          ./ghcide
          ./hls-plugin-api
          ./hls-test-utils
-         ./plugins/hls-tactics-plugin
+         -- ./plugins/hls-tactics-plugin
          -- ./plugins/hls-brittany-plugin
          -- ./plugins/hls-stylish-haskell-plugin
          -- ./plugins/hls-fourmolu-plugin
-         ./plugins/hls-class-plugin
-         ./plugins/hls-eval-plugin
+         -- ./plugins/hls-class-plugin
+         -- ./plugins/hls-eval-plugin
          ./plugins/hls-explicit-imports-plugin
          ./plugins/hls-refine-imports-plugin
          -- ./plugins/hls-hlint-plugin
          ./plugins/hls-rename-plugin
-         ./plugins/hls-retrie-plugin
-         ./plugins/hls-haddock-comments-plugin
-         ./plugins/hls-splice-plugin
+         -- ./plugins/hls-retrie-plugin
+         -- ./plugins/hls-haddock-comments-plugin
+         -- ./plugins/hls-splice-plugin
          -- ./plugins/hls-floskell-plugin
          ./plugins/hls-pragmas-plugin
          ./plugins/hls-module-name-plugin
          -- ./plugins/hls-ormolu-plugin
          ./plugins/hls-call-hierarchy-plugin
-         ./plugins/hls-alternate-number-format-plugin
+         -- ./plugins/hls-alternate-number-format-plugin
          ./plugins/hls-qualify-imported-names-plugin
          ./plugins/hls-selection-range-plugin
          ./plugins/hls-change-type-signature-plugin
@@ -77,7 +77,7 @@ source-repository-package
   -- https://github.com/tibbe/ekg-json/pull/12
 
 constraints:
-    haskell-language-server -floskell -fourmolu -ormolu -stylishHaskell -brittany -hlint +rename,
+    haskell-language-server -floskell -fourmolu -ormolu -stylishHaskell -brittany -hlint +rename -haddockComments -alternateNumberFormat -class -eval -hlint -retrie -splice -stylish-haskell -tactics,
     ormolu < 0,
     floskell < 0,
     fourmolu < 0,
@@ -85,6 +85,7 @@ constraints:
     brittanay < 0,
     hls-hlint-plugin < 0,
     hls-floskell-plugin < 0,
+    hls-haddock-comments-plugin < 0
 
 allow-newer:
   -- ghc-9.2
