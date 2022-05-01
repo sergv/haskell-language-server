@@ -69,7 +69,7 @@ renameProvider state pluginId (RenameParams (TextDocumentIdentifier uri) pos _pr
         oldName <- getNameAtPos state nfp pos
         refLocs <- refsAtName state nfp oldName
         crossModuleEnabled <- lift $ usePropertyLsp #crossModule pluginId properties
-        unless crossModuleEnabled $ failWhenImportOrExport state nfp refLocs oldName
+        -- unless crossModuleEnabled $ failWhenImportOrExport state nfp refLocs oldName
         when (isBuiltInSyntax oldName) $
             throwE ("Invalid rename of built-in syntax: \"" ++ showName oldName ++ "\"")
         let newName = mkTcOcc $ T.unpack newNameText
@@ -78,27 +78,27 @@ renameProvider state pluginId (RenameParams (TextDocumentIdentifier uri) pos _pr
         fileEdits <- mapM (uncurry getFileEdit) filesRefs
         pure $ foldl' (<>) mempty fileEdits
 
--- | Limit renaming across modules.
-failWhenImportOrExport ::
-    (MonadLsp config m) =>
-    IdeState ->
-    NormalizedFilePath ->
-    HashSet Location ->
-    Name ->
-    ExceptT String m ()
-failWhenImportOrExport state nfp refLocs name = do
-    pm <- handleMaybeM ("No parsed module for: " ++ show nfp) $ liftIO $ runAction
-        "Rename.GetParsedModule"
-        state
-        (use GetParsedModule nfp)
-    let hsMod = unLoc $ pm_parsed_source pm
-    case (unLoc <$> hsmodName hsMod, hsmodExports hsMod) of
-        (mbModName, _) | not $ nameIsLocalOrFrom (replaceModName name mbModName) name
-            -> throwE "Renaming of an imported name is unsupported"
-        (_, Just (L _ exports)) | any ((`HS.member` refLocs) . unsafeSrcSpanToLoc . getLoc) exports
-            -> throwE "Renaming of an exported name is unsupported"
-        (Just _, Nothing) -> throwE "Explicit export list required for renaming"
-        _ -> pure ()
+-- -- | Limit renaming across modules.
+-- failWhenImportOrExport ::
+--     (MonadLsp config m) =>
+--     IdeState ->
+--     NormalizedFilePath ->
+--     HashSet Location ->
+--     Name ->
+--     ExceptT String m ()
+-- failWhenImportOrExport state nfp refLocs name = do
+--     pm <- handleMaybeM ("No parsed module for: " ++ show nfp) $ liftIO $ runAction
+--         "Rename.GetParsedModule"
+--         state
+--         (use GetParsedModule nfp)
+--     let hsMod = unLoc $ pm_parsed_source pm
+--     case (unLoc <$> hsmodName hsMod, hsmodExports hsMod) of
+--         (mbModName, _) | not $ nameIsLocalOrFrom (replaceModName name mbModName) name
+--             -> throwE "Renaming of an imported name is unsupported"
+--         (_, Just (L _ exports)) | any ((`HS.member` refLocs) . unsafeSrcSpanToLoc . getLoc) exports
+--             -> throwE "Renaming of an exported name is unsupported"
+--         (Just _, Nothing) -> throwE "Explicit export list required for renaming"
+--         _ -> pure ()
 
 ---------------------------------------------------------------------------------------------------
 -- Source renaming
