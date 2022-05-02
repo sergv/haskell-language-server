@@ -3285,11 +3285,27 @@ addFunctionConstraintTests = let
     , "eq (Pair x y) (Pair x' y') = x == x' && y == y'"
     ]
 
+  missingMonadConstraint :: T.Text -> T.Text
   missingMonadConstraint constraint = T.unlines
     [ "module Testing where"
     , "f :: " <> constraint <> "m ()"
     , "f = do "
     , "  return ()"
+    ]
+
+  missingMultiParamConstraint :: T.Text -> T.Text
+  missingMultiParamConstraint constraint = T.unlines
+    [ "{-# LANGUAGE MultiParamTypeClasses #-}"
+    , "module Testing where"
+    , ""
+    , "import Data.Kind"
+    , "import Data.Monoid"
+    , ""
+    , "class Foo (a :: Type) (b :: Type) where"
+    , "  foo :: Monoid m => (a -> m) -> b -> m"
+    , ""
+    , "bar :: " <> constraint <> "a -> Sum Int"
+    , "bar x = foo Sum x"
     ]
 
   in testGroup "add function constraint"
@@ -3333,6 +3349,11 @@ addFunctionConstraintTests = let
     "Add `Monad m` to the context of the type signature for `f`"
     (missingMonadConstraint "")
     (missingMonadConstraint "Monad m => ")
+  , checkCodeAction
+    "no preexisting costraint, no ‘the type signature for’ in the GHC message"
+    "No instance for (Foo Int a)"
+    (missingMultiParamConstraint "")
+    (missingMultiParamConstraint "Foo Int a => ")
   ]
 
 checkCodeAction :: String -> T.Text -> T.Text -> T.Text -> TestTree
