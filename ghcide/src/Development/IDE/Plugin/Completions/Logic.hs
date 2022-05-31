@@ -626,7 +626,7 @@ getCompletions plId ideOpts CC {allModNamesAsNS, anyQualCompls, unqualCompls, qu
               thisModName = Local $ nameSrcSpan name
 
           compls = if T.null prefixModule
-            then map (notQual,) localCompls ++ map (qual,) unqualCompls ++ ((notQual,) . ($Nothing) <$> anyQualCompls)
+            then map (notQual,) localCompls ++ map (qual,) unqualCompls ++ ((notQual,) . ($ Nothing) <$> anyQualCompls)
             else ((qual,) <$> Map.findWithDefault [] prefixModule (getQualCompls qualCompls))
                  ++ ((notQual,) . ($ Just prefixModule) <$> anyQualCompls)
 
